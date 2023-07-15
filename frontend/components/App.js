@@ -19,8 +19,18 @@ constructor() {
   this.state = {
     todos: [],
     error: '',
+    todoNameInput: '',
   };
 }
+
+
+
+handleChange = evt => {
+  const {value} = evt.target
+  this.setState({...this.state, todoNameInput: value})
+  
+}
+
 
 fetchAllTodos = () => {
   axios.get(URL)
@@ -31,6 +41,9 @@ fetchAllTodos = () => {
     this.setState({...this.state, error: err.response.data.message})
   })
 }
+
+
+
 componentDidMount() {
   this.fetchAllTodos();
 }
@@ -50,7 +63,7 @@ render() {
           }
         </div>
         <form id="todoForm">
-          <input type="text" placeholder="Type todo"></input>
+          <input value={this.state.todoNameInput} onChange={this.handleChange} type="text" placeholder="Type todo"></input>
           <input type="submit"></input>
           <button>Clear Completed</button>
         </form>
