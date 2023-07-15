@@ -104,21 +104,15 @@ render() {
               return acc
             }, [])
             
-            
-            
-            
-            
-            // (td => {
-            //   return 
-            // })
-           
-          }
+        }
         </div>
-        <form onSubmit={this.onTodoFormSubmit} id="todoForm">
-          <input value={this.state.todoNameInput} onChange={this.handleChange} type="text" placeholder="Type todo"></input>
-          <input type="submit"></input>
-        </form>
-          <button onClick={this.toggleDisplayCompleted}>{this.state.completed ? 'Hide' : 'Show'} Completed</button>
+        <Form 
+        onTodoFormSubmit={this.onTodoFormSubmit}
+        todoNameInput={this.todoNameInput}
+        handleChange={this.handleChange}
+        completed={this.completed}
+        toggleDisplayCompleted={this.toggleDisplayCompleted}
+        />
       </div>
     )
   }
