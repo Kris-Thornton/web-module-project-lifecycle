@@ -20,6 +20,7 @@ constructor() {
     todos: [],
     error: '',
     todoNameInput: '',
+    completed: true,
   };
 }
 
@@ -41,7 +42,10 @@ setAxiosResponseError = (err) => this.setState({...this.state, error: err.respon
 postNewTodo = () => {
   axios.post(URL, {name: this.state.todoNameInput})
   .then(res => {
-    this.fetchAllTodos
+    // this fixes the issue below
+    this.setState({ ...this.state, todos: this.state.todos.concat(res.data.data)})
+    // this was the old line
+    // this.fetchAllTodos
     this.resetForm()
   })
   .catch(this.setAxiosResponseError)
@@ -65,6 +69,18 @@ fetchAllTodos = () => {
   })
 }
 
+toggleCompleted = id => evt => {
+  axios.patch(`${URL}/${id}`)
+  .then(res => {
+    this.fetchAllTodos();  
+  })
+  .catch(this.setAxiosResponseError)
+}
+
+toggleDisplayCompleted = () => {
+  
+  this.setState({ ...this.state, completed: !this.state.completed})
+}
 
 
 componentDidMount() {
@@ -80,16 +96,29 @@ render() {
         <div id="todos">
           <h2>Todos:</h2>
           {
-            this.state.todos.map(td => {
-              return <div key={td.id}>{td.name}</div>
-            })
+            this.state.todos.reduce((acc, td) => {
+              
+              if(this.state.completed || !td.completed) return acc.concat(
+                <div onClick={this.toggleCompleted(td.id)} key={td.id}>{td.name} {td.completed ? '  COMPLETED ✅' : ''}</div> 
+              )
+              return acc
+            }, [])
+            
+            
+            
+            
+            
+            // (td => {
+            //   return 
+            // })
+           
           }
         </div>
         <form onSubmit={this.onTodoFormSubmit} id="todoForm">
           <input value={this.state.todoNameInput} onChange={this.handleChange} type="text" placeholder="Type todo"></input>
           <input type="submit"></input>
-          <button>Clear Completed</button>
         </form>
+          <button onClick={this.toggleDisplayCompleted}>{this.state.completed ? 'Hide' : 'Show'} Completed</button>
       </div>
     )
   }
